@@ -1,140 +1,128 @@
 #include "get_next_line.h"
 #include "libft/libft.h"
-#include <fcntl.h>
 
-t_gnl		*add_file(int fd, t_gnl *lst)
+t_file		*add_file(int fd, t_file *f)
 {
-	t_gnl	*res;
+	t_file	*new;
 
-	res = NULL;
-	if (!lst)
+	new = NULL;
+	if (f->fd == -2)
 	{
-		if (!(lst = (t_gnl*)malloc(sizeof(*lst)) &&
-		(lst->line = ft_strnew(BUFF_SIZE))))
+		if (!(f->line = ft_strnew(BUFF_SIZE)) || (read(fd, f->line, BUFF_SIZE == -1)))
 			return (NULL);
-		lst->fd = fd;
-		return (lst)
+		f->fd = fd;
+		return (f);
 	}
 	else
 	{
-		while (lst->next)
-			lst = lst->next;
-		if (!(res = add_file(fd, res)))
+		while (f->next)
+			f = f->next;
+		if (!(new = add_file(fd, f)))
 			return (NULL);
-		lst->next = res;
-		return (res);
+		f->next = new;
+		return (new);
 	}
 }
 
-t_gnl		*get_file(int fd, t_gnl *lst)
+t_file		*get_file(int fd, t_file *f)
 {
-	t_gnl	*tmp;
-
-	tmp = lst;
-	if (!lst)
-		return (add_file(fd, lst));
-	while (lst)
+	if (f->fd == -2)
+		return (add_file(fd, f));
+	while (f)
 	{
-		if (lst->fd == fd)
-		{
-			if (!lst->line)
-				if (!(lst->line = ft_strnew(BUFF_SIZE)))
-					return (NULL);
-			return (lst);
-		}
-		lst = lst->next;
+		if (f->fd == fd)
+			return (f);
+		f = f->next;
 	}
-	return (add_file(fd, tmp));
+	return (add_file(fd, f));
 }
-
-static int	get_line(t_gnl *lst, char **line)
+/*
+void		del_file(t_file **begin, t_file *file)
 {
-	char	*buff;
+	t_file	*tmp1;
+	t_file	*tmp2;
+	t_file	*tmp;
+
+	tmp = *begin;
+	tmp1 = tmp;
+	if (*begin == file)
+	{
+		tmp2 = file->next;
+		free(file->line);
+	}
+}
+*/
+
+static int	get_line(t_file *f, char **line)
+{
+	char	buff[BUFF_SIZE + 1];
+	char	*tmp;
 	int	r;
 
-	if (!(buff = ft_strnew(BUFF_SIZE)))
-		return (-1);
-	r = 0;
-	if(lst)
-		r = ft_strlen(lst->line);
-	while (!ft_strchr(lst->line, '\n') && (r = read(lst->fd, buff, BUFF_SIZE)))
+	r = 1;
+	while (!ft_strchr(f->line, '\n') && r)
 	{
-		if (!(lst->line = ft_strjoin(lst->line, buff)))
-			return (-1);
+		r = read(f->fd, buff, BUFF_SIZE);
+		if (r)
+		{
+			buff[r] = '\0';
+			tmp = f->line;
+			if (!(f->line = ft_strjoin(f->line, buff)))
+				return (-1);
+			free(tmp);
+		}
 	}
-	if (r >= 0)
-		*line = ft_strjoin(ft_strsep(&lst->line, "\n"), "\n");
-//	if (r == 0 && lst && lst->line)
-//	{
-//		free(lst->line);
-//		free(lst);
-//	}
-	free(buff);
-	return (r);
+	*line = ft_strdup(ft_strsep(&f->line, "\n"));
+//	printf("%s11111111\n", f->line);	///////
+	if (r == 0 && (*(f->line) == '\0'))
+		return (0);
+	return (1);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_gnl	*lst;
-	t_gnl		*tmp;
+	static t_file	*f;
+	t_file		*tmp;
 	int		r;
 
-	if (fd < 0 || !line)
+	if (!f)
+	{
+		f = (t_file*)malloc(sizeof(t_file*));
+		f->fd = -2;
+		f->line = NULL;
+		f->next = NULL;
+	}
+	if (fd < 0 || !line || read(fd, *line, 0) < 0 || BUFF_SIZE < 0)
 		return (-1);
-	r = -1;
-	if (!lst)
-	{
-		lst = add_file(fd, lst);
-		r = get_line(lst, line);
-		if (r == 0)
-		{	
-			free(lst->line);
-			free(lst)
-		}
-	}
-	else
-	{
-		tmp = get_file(fd, lst);
-		r = get_line(tmp, line);
-		if (r == 0)
-		{
-			free(tmp->line);
-			free(tmp);
-		}
-	}
+	if ((tmp = get_file(fd, f)) == NULL || (r = get_line(tmp, line)) == -1)
+		return (-1);
+	if (r == 0 && f && f->line && *(f->line))
+		return (1);
+	if (r == 0)
+		tmp->fd = -2;
 	return (r);
 }
-		//if (!(lst = (t_gnl*)malloc(sizeof(*lst))))
-		//	return (-1);
-		//lst->line = ft_strnew(BUFF_SIZE);
-		//lst->fd = fd;
-
+/*
 int	main()
 {
 	char	**line;
 	int 	fd;
+	int 	fd2;
 	int	r;
+	int	i = 0;
 
-	r = -1;
 	line = (char**)malloc(sizeof(char*));
-	*line = (char*)malloc(sizeof(char)*100);
 	fd = open("get_next_line.h", O_RDONLY);
-	while ((r = get_next_line(fd, line)) > 0)
-	{
-		printf("%s", *line);
-		//if(line && *line)
-		//	free(*line);
-		*line = (char*)malloc(sizeof(char)*100);
-	}
+	printf("numero du fd : %i", fd);
+	while ((r = get_next_line(fd, line)) > 0 && ++i)
+		printf("%s\n", *line);
 	if (r == -1)
-		printf("\nERREURERREUR\n");
-	//free(*line);
-	//free(line);
+		printf("\n\nERREURERREUR\n\n");
+	i = 0;
+	fd2 = open("main.c", O_RDONLY);
+	printf("numero du fd2 : %i", fd);
+	while ((r = get_next_line(fd2, line)) > 0 && ++i)
+		printf("%s\n", *line);
+	free(line);
 	return (0);
-}
-/*si le fichier fd est deja commencer, on retrouve sa structure,
-sinon on la crée.
-si on la crée : lecture du fichier jusqu'a la premiere ligne trouvée.
-on remplie le buffer, renvoie la ligne.
-si deja créée, on verifie qu'il n'y a pas deja une ligne entiere dans le buffer de la structure, sinon on lit BUFF_SIZE chars et on cherche.*/
-
+}*/

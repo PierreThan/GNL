@@ -1,18 +1,36 @@
 #include "libft.h"
 
+int	ft_init_strsep(char **stringp, const char *delim)
+{
+	int	j;
+	if (*delim =='\n' && *(delim + 1) == '\0')
+	{
+		if (**stringp == '\n')
+		{
+			**stringp = '\0';
+			(*stringp)++;
+			return (1);
+		}
+		else if (!ft_strchr(*stringp, '\n'))
+		{
+			j = ft_strlen(*stringp);
+			*stringp += ft_strlen(*stringp);
+			return (1);
+		}
+	}
+	return (0);
+}
+
 char	*ft_strsep(char **stringp, const char *delim)
 {
-	char	*res;
 	int	i;
-	
+	char	*res;
+
 	if (!(*stringp && delim))
 		return (NULL);
 	res = *stringp;
-	if (**stringp == '\n' && !ft_strchr(delim, '\n'))
-	{
-		*((*stringp)++) = '\0';
+	if (ft_init_strsep(stringp, delim))
 		return (res);
-	}
 	while (**stringp)
 	{
 		i = 0;
@@ -20,11 +38,12 @@ char	*ft_strsep(char **stringp, const char *delim)
 		{
 			if (delim[i++] == **stringp)
 			{
-				*((*stringp)++) = '\0';
+				**stringp = '\0';
+				*stringp += 1;
 				return (res);
 			}
 		}
-		(*stringp)++;
+		*stringp += 1;;
 	}
 	return (res);
 }
