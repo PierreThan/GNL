@@ -1,32 +1,31 @@
 #include "libft/libft.h"
 #include "get_next_line.h"
 
-static t_file	*create_file(int fd, t_file *f)
+static t_file	*create_file(int fd, t_file *f, int n)
 {
 	char	buff[BUFF_SIZE + 1];
 	int	r;
 	char	*tmp;
 
-	if (f && f->fd == -2)
+	if (!f)
 	{
-		f->fd = fd;
-		if (!(f->line = ft_strnew(1)))
-			return (NULL);
-		while ((r = read(fd, buff, BUFF_SIZE)))
-		{
-			buff[r] = '\0';
-			tmp = f->line;
-			if (!(f->line = ft_strjoin(f->line, buff)))
-				return (NULL);
-			free(tmp);
-		}
-		f->next  = NULL;
-		return (f);
+		if (!(f = (t_file*)malloc(sizeof(t_file*))))
+			return (NULL);	
+		f->fd = -2;
+		f->next = NULL;
 	}
-	if (!(f = (t_file*)malloc(sizeof(t_file*))))
-		return (NULL);
-	f->fd = -2;
-	f = create_file(fd, f);
+	f->fd = fd;
+	f->line = ft_strnew(0);
+	while ((r = read(fd, buff, BUFF_SIZE)))
+	{
+		buff[r] = '\0';
+		tmp = f->line;
+		if(!(f->line = ft_strjoin(f->line, buff)))
+			return (NULL);
+		if (n++)
+			free(tmp);
+	}
+	f->next  = NULL;
 	return (f);
 }
 
@@ -35,7 +34,7 @@ static t_file	*get_file(int fd, t_file *f)
 	t_file	*tmp;
 
 	if (f->fd == -2)
-		return (create_file(fd, f));
+		return (create_file(fd, f, 0));
 	while (f)
 	{
 		if (f->fd == fd)
@@ -43,17 +42,41 @@ static t_file	*get_file(int fd, t_file *f)
 		tmp = f;
 		f = f->next;
 	}
-	f = create_file(fd, f);
+	f = create_file(fd, f, 0);
 	tmp->next = f;
-	return(f);
+	return (f);
 }
 
-int	get_next_line(const int fd, char **line)
+/*
+   static void	del_file(t_file **begin, t_file *f)
+   {
+   t_file	*tmp;
+
+   tmp = *begin;
+   if (*begin == f)
+   {
+   if ((*begin)->next)
+ *begin = (*begin)->next;
+ free(tmp);
+ return ;
+ }
+ while (tmp->next)
+ {
+ if (tmp->next == f)
+ {
+ tmp->next = f->next;
+ free(f);
+ return ;
+ }
+ tmp = tmp->next;
+ }
+ }
+ */
+
+int		get_next_line(const int fd, char **line)
 {
 	static t_file	*f;
 	t_file		*tf;
-//	char		*ts;
-//	int		r;
 
 	if (!f)
 	{
@@ -64,12 +87,11 @@ int	get_next_line(const int fd, char **line)
 		f->next = NULL;
 	}
 	if (fd < 0 || !line || read(fd, *line, 0) < 0 || BUFF_SIZE < 0 ||
-	!(tf = get_file(fd, f)))
+			!(tf = get_file(fd, f)))
 		return (-1);
 	if (!ft_strlen(tf->line))
 	{
-		//free(tf->line);
-		free(tf);
+		////del_file(&f, tf);
 		return (0);
 	}
 	if (!(*line = ft_strdup(ft_strsep(&tf->line, "\n\0"))))
