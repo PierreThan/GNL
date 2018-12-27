@@ -6,7 +6,7 @@
 /*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/27 17:14:47 by pthan             #+#    #+#             */
-/*   Updated: 2018/12/27 17:14:50 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/27 17:42:54 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static t_file	*create_file(int fd, t_file *f, int n)
 		f->next = NULL;
 	}
 	f->fd = fd;
-	f->line = ft_strnew(0);
+	f->line = ft_strnew(2);
 	while ((r = read(fd, buff, BUFF_SIZE)))
 	{
 		buff[r] = '\0';

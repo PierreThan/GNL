@@ -6,14 +6,14 @@
 /*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/27 17:14:57 by pthan             #+#    #+#             */
-/*   Updated: 2018/12/27 17:15:00 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/27 17:46:13 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFF_SIZE 50
+# define BUFF_SIZE 50000
 
 typedef struct			s_file
 {
