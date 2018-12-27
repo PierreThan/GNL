@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: pthan <pthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 19:52:05 by pthan             #+#    #+#             */
-/*   Updated: 2018/11/20 19:52:40 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/10 13:50:19 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,32 +33,30 @@ static size_t	ft_nb_line_tab(char const *s, char c)
 	return (n);
 }
 
-char	**ft_strsplit(char const *s, char c)
+char			**ft_strsplit(char const *s, char c)
 {
-	size_t	n;
-	size_t	i;
-	size_t	j;
+	size_t	t[3];
 	char	**res;
 
-	i = 0;
-	n = 0;
+	t[1] = 0;
+	t[0] = 0;
 	if (!(res = (char**)malloc(sizeof(char*) * (ft_nb_line_tab(s, c) + 1))))
 		return (NULL);
-	while (s && s[i])
+	while (s && s[t[1]])
 	{
-		while (s[i] && s[i] == c)
-			i++;
-		j = 0;
-		while (s[i + j] && s[i + j] != c)
-			j++;
-		if (j)
-		{	
-			if (!(res[n] = ft_strsub(s, (unsigned int)i, j)))
+		while (s[t[1]] && s[t[1]] == c)
+			t[1]++;
+		t[2] = 0;
+		while (s[t[1] + t[2]] && s[t[1] + t[2]] != c)
+			t[2]++;
+		if (t[2])
+		{
+			if (!(res[t[0]] = ft_strsub(s, (unsigned int)t[1], t[2])))
 				return (NULL);
-			i += j;
-			n++;
+			t[1] += t[2];
+			t[0]++;
 		}
 	}
-	res[n] = 0;
+	res[t[0]] = 0;
 	return (res);
 }

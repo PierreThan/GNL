@@ -6,7 +6,7 @@
 /*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 15:43:42 by pthan             #+#    #+#             */
-/*   Updated: 2018/11/20 15:50:13 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/27 17:17:29 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	ft_isupper(int c)
 	return (1);
 }
 
-int	ft_isalpha(int c)
+int			ft_isalpha(int c)
 {
 	return (ft_islower(c) || ft_isupper(c));
 }

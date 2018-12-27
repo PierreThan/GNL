@@ -6,7 +6,7 @@
 /*   By: pthan <pthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 18:27:51 by pthan             #+#    #+#             */
-/*   Updated: 2018/11/20 19:18:11 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/27 17:26:12 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char		*res;
+	char			*res;
 	unsigned int	i;
 	unsigned int	j;
 

@@ -6,7 +6,7 @@
 /*   By: pthan <pthan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 16:05:29 by pthan             #+#    #+#             */
-/*   Updated: 2018/11/25 13:26:09 by pthan            ###   ########.fr       */
+/*   Updated: 2018/12/27 17:26:34 by pthan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strmap(char const *s, char (*f)(char))
 {
-	char		*res;
+	char			*res;
 	unsigned int	i;
 
 	i = 0;

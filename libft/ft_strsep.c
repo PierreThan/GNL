@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strsep.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/27 17:21:19 by pthan             #+#    #+#             */
+/*   Updated: 2018/12/27 17:25:41 by pthan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-int	ft_init_strsep(char **stringp, const char *delim)
+int		ft_init_strsep(char **stringp, const char *delim)
 {
 	int	j;
-	if (*delim =='\n' && *(delim + 1) == '\0')
+
+	if (*delim == '\n' && *(delim + 1) == '\0')
 	{
 		if (**stringp == '\n')
 		{
@@ -23,7 +36,7 @@ int	ft_init_strsep(char **stringp, const char *delim)
 
 char	*ft_strsep(char **stringp, const char *delim)
 {
-	int	i;
+	int		i;
 	char	*res;
 
 	if (!(*stringp && delim))
@@ -43,7 +56,7 @@ char	*ft_strsep(char **stringp, const char *delim)
 				return (res);
 			}
 		}
-		*stringp += 1;;
+		*stringp += 1;
 	}
 	return (res);
 }

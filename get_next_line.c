@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pthan <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/27 17:14:47 by pthan             #+#    #+#             */
+/*   Updated: 2018/12/27 17:14:50 by pthan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft/libft.h"
 #include "get_next_line.h"
 
 static t_file	*create_file(int fd, t_file *f, int n)
 {
 	char	buff[BUFF_SIZE + 1];
-	int	r;
+	int		r;
 	char	*tmp;
 
 	if (!f)
 	{
 		if (!(f = (t_file*)malloc(sizeof(t_file*))))
-			return (NULL);	
+			return (NULL);
 		f->fd = -2;
 		f->next = NULL;
 	}
@@ -20,12 +32,12 @@ static t_file	*create_file(int fd, t_file *f, int n)
 	{
 		buff[r] = '\0';
 		tmp = f->line;
-		if(!(f->line = ft_strjoin(f->line, buff)))
+		if (!(f->line = ft_strjoin(f->line, buff)))
 			return (NULL);
 		if (n++)
 			free(tmp);
 	}
-	f->next  = NULL;
+	f->next = NULL;
 	return (f);
 }
 
@@ -73,10 +85,10 @@ static t_file	*get_file(int fd, t_file *f)
  }
  */
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	static t_file	*f;
-	t_file		*tf;
+	t_file			*tf;
 
 	if (!f)
 	{
@@ -90,10 +102,7 @@ int		get_next_line(const int fd, char **line)
 			!(tf = get_file(fd, f)))
 		return (-1);
 	if (!ft_strlen(tf->line))
-	{
-		////del_file(&f, tf);
 		return (0);
-	}
 	if (!(*line = ft_strdup(ft_strsep(&tf->line, "\n\0"))))
 		return (-1);
 	return (1);
